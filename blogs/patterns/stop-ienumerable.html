@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Stop Injecting IEnumerable Just to Pick One Service in C# | 15 Min Refactoring Guide</title>
+  <meta name="description" content="Why injecting IEnumerable<IService> creates memory allocation overhead and how to refactor using .NET 8 Keyed Services and Factory Resolvers." />
+  <meta name="keywords" content="Keyed Services .NET 8, IEnumerable Dependency Injection C#, Strategy Pattern Refactoring, FromKeyedServices" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../style.css" />
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <div class="logo-avatar">SP</div>
+        <span class="logo-name">Suraj Prajapati</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../../index.html#hero" class="nav-link">Home</a></li>
+        <li><a href="../../index.html#about" class="nav-link">About</a></li>
+        <li><a href="../../index.html#skills" class="nav-link">Skills</a></li>
+        <li><a href="../../projects.html" class="nav-link">Projects</a></li>
+        <li><a href="../../blog.html" class="nav-link active">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" title="Toggle Theme" aria-label="Toggle theme">
+          <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <a href="../../blog.html" class="btn btn-outline nav-cta">← Back to Blog</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== ARTICLE DETAIL CONTENT ===== -->
+  <article class="section blog-detail-section" style="padding-top: 130px;">
+    <div class="container" style="max-width: 880px;">
+      
+      <div class="blog-detail-header">
+        <div style="display:flex; gap:10px; align-items:center; margin-bottom:16px;">
+          <span class="blog-badge architecture">Clean Code</span>
+          <span style="font-size:.85rem; color:var(--text-xlight);">January 2026 • ⏱️ 15 min read</span>
+        </div>
+        <h1 style="font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight:800; line-height:1.25; margin-bottom:20px;">
+          Stop Injecting IEnumerable Just to Pick One Service in C#
+        </h1>
+        <div class="author-card-sm" style="display:flex; align-items:center; gap:14px; margin-bottom:30px; padding:16px 20px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md);">
+          <img src="../../SurajImage.jpg" alt="Suraj Prajapati" style="width:52px; height:52px; border-radius:50%; object-fit:cover;" />
+          <div>
+            <strong style="display:block; font-size:1rem;">Suraj Prajapati</strong>
+            <span style="font-size:.85rem; color:var(--text-light);">Senior .NET Backend Developer • FinTech Specialist</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="blog-article-body" style="font-size:1.05rem; line-height:1.85;">
+        
+        <p>A common architectural anti-pattern in C# applications when supporting multiple strategy implementations (e.g. payment channels like UPI, Card, Payout) is injecting <code>IEnumerable&lt;IPaymentGateway&gt;</code> into a processing service and using LINQ to filter out the matching strategy at runtime.</p>
+
+        <div style="background:var(--bg-alt); padding:24px; border-radius:var(--radius-md); margin:28px 0; border:1px solid var(--border);">
+          <h3 style="margin-top:0; font-size:1.15rem; color:var(--primary);">📌 What You Will Master (15 Min Guide):</h3>
+          <ol style="margin:12px 0 0 20px; font-size:.95rem; line-height:1.7;">
+            <li>Why <code>IEnumerable&lt;T&gt;</code> injection hurts performance and creates GC allocation spikes.</li>
+            <li>How the DI container resolves every single strategy on every request.</li>
+            <li>Refactoring Option 1: Native **.NET 8 Keyed Services** (`AddKeyedScoped` + `[FromKeyedServices]`).</li>
+            <li>Refactoring Option 2: Factory Resolver Delegates.</li>
+          </ol>
+        </div>
+
+        <h2>1. The Problem with IEnumerable Injection</h2>
+
+        <pre><code>// ❌ BAD: Instantiates ALL registered services on every request!
+public class PaymentService
+{
+    private readonly IEnumerable&lt;IPaymentGateway&gt; _gateways;
+
+    public PaymentService(IEnumerable&lt;IPaymentGateway&gt; gateways)
+    {
+        _gateways = gateways; // DI Container resolves ALL implementations!
+    }
+
+    public async Task ProcessPaymentAsync(string gatewayName, PaymentRequest req)
+    {
+        var gateway = _gateways.FirstOrDefault(g =&gt; g.Name == gatewayName);
+        if (gateway == null) throw new NotSupportedException();
+        await gateway.ExecuteAsync(req);
+    }
+}</code></pre>
+
+        <p><strong>Why is this bad?</strong> It forces the DI container to instantiate <em>every single registered payment gateway class</em> on every HTTP request, creating unnecessary objects, connecting to unused databases, and triggering Garbage Collector pressure.</p>
+
+        <h2>2. Solution 1: Native .NET 8 Keyed Services</h2>
+        <p>Starting with .NET 8, C# natively supports <strong>Keyed Services</strong> via <code>AddKeyedScoped</code> and <code>[FromKeyedServices]</code>:</p>
+
+        <pre><code>// 1. Program.cs Registration
+builder.Services.AddKeyedScoped&lt;IPaymentGateway, UpiGateway&gt;("UPI");
+builder.Services.AddKeyedScoped&lt;IPaymentGateway, CardGateway&gt;("Card");
+builder.Services.AddKeyedScoped&lt;IPaymentGateway, PayoutGateway&gt;("Payout");
+
+// 2. Direct Resolution in API Controller / Handler
+public class PaymentController : ControllerBase
+{
+    public async Task&lt;IActionResult&gt; Process(
+        [FromKeyedServices("UPI")] IPaymentGateway gateway, 
+        PaymentRequest req)
+    {
+        await gateway.ExecuteAsync(req);
+        return Ok();
+    }
+}</code></pre>
+
+        <h2>3. Solution 2: Factory Resolver Delegate</h2>
+
+        <pre><code>// Program.cs
+public delegate IPaymentGateway GatewayResolver(string name);
+
+builder.Services.AddScoped&lt;GatewayResolver&gt;(sp =&gt; name =&gt; name switch
+{
+    "UPI" =&gt; sp.GetRequiredService&lt;UpiGateway&gt;(),
+    "Card" =&gt; sp.GetRequiredService&lt;CardGateway&gt;(),
+    _ =&gt; throw new NotSupportedException($"Gateway '{name}' is not registered.")
+});</code></pre>
+
+        <!-- NAV LINKS TO OTHER ARTICLES -->
+        <div style="margin-top:50px; padding:28px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg);">
+          <h3 style="margin-top:0; margin-bottom:16px;">Explore Related .NET Architecture Guides</h3>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:16px;">
+            <a href="../patterns/builder-pattern.html" style="padding:14px; background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-md); text-decoration:none; color:var(--text-dark); font-weight:600;">
+              🏗️ Builder Design Pattern →
+            </a>
+            <a href="../patterns/factory-pattern.html" style="padding:14px; background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-md); text-decoration:none; color:var(--text-dark); font-weight:600;">
+              🏭 Factory Method Pattern →
+            </a>
+            <a href="../dotnet/di-lifetimes.html" style="padding:14px; background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-md); text-decoration:none; color:var(--text-dark); font-weight:600;">
+              ⚡ DI Lifetimes in .NET 8 →
+            </a>
+          </div>
+          <div style="text-align:center; margin-top:24px;">
+            <a href="../../blog.html" class="btn btn-primary">← View All 11 .NET Articles</a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </article>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <a href="../../index.html" class="nav-logo">
+            <span class="logo-bracket">&lt;</span>SP<span class="logo-bracket">/&gt;</span>
+          </a>
+          <p>.NET Core & C# Backend Engineering Blog<br/>Written by Suraj Prajapati.</p>
+        </div>
+        <div class="footer-links">
+          <a href="../../index.html#hero">Home</a>
+          <a href="../../index.html#about">About</a>
+          <a href="../../index.html#skills">Skills</a>
+          <a href="../../projects.html">Projects</a>
+          <a href="../../blog.html">Blog</a>
+          <a href="../../index.html#contact">Contact</a>
+        </div>
+        <div class="footer-socials">
+          <a href="https://www.freelancer.in/u/SurajBelduha08" target="_blank" rel="noopener" class="social-link">Freelancer</a>
+          <a href="https://www.linkedin.com/in/suraj-prajapati-201ba222b/" target="_blank" rel="noopener" class="social-link">LinkedIn</a>
+          <a href="https://github.com/surajbelduha" target="_blank" rel="noopener" class="social-link">GitHub</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Suraj Prajapati. Crafted with HTML5, CSS3 & JavaScript.</p>
+        <a href="#" class="back-to-top">↑ Back to Top</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

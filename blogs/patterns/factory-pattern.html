@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Understanding the Factory Method Design Pattern in .NET | Suraj Prajapati</title>
+  <meta name="description" content="A simple, step-by-step 15-minute guide to the Factory Method Design Pattern in C# and .NET 8. Learn how to decouple client code from concrete object creation." />
+  <meta name="keywords" content="Factory Method Pattern C#, Creational Patterns .NET 8, Open Closed Principle, Notification Factory C#" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../style.css" />
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <div class="logo-avatar">SP</div>
+        <span class="logo-name">Suraj Prajapati</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../../index.html#hero" class="nav-link">Home</a></li>
+        <li><a href="../../index.html#about" class="nav-link">About</a></li>
+        <li><a href="../../index.html#skills" class="nav-link">Skills</a></li>
+        <li><a href="../../projects.html" class="nav-link">Projects</a></li>
+        <li><a href="../../blog.html" class="nav-link active">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <!-- Language Converter Widget -->
+        <div class="lang-converter" title="Translate Page">
+          <span style="font-size:.9rem; color:var(--text-light);">🌐</span>
+          <div id="google_translate_element"></div>
+        </div>
+        <button class="theme-toggle" id="themeToggle" title="Toggle Theme" aria-label="Toggle theme">
+          <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <a href="../../blog.html" class="btn btn-outline nav-cta">← Back to Blog</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== ARTICLE DETAIL CONTENT ===== -->
+  <article class="section blog-detail-section" style="padding-top: 130px;">
+    <div class="container" style="max-width: 1140px;">
+      
+      <!-- BREADCRUMB & HEADER -->
+      <div class="blog-breadcrumb">
+        <a href="../../index.html">Home</a> <span>/</span>
+        <a href="../../blog.html">Design Patterns</a> <span>/</span>
+        <span style="color:var(--text-dark);">Understanding Factory Method Design Pattern in .NET</span>
+      </div>
+
+      <div class="blog-detail-header" style="max-width: 820px; margin-bottom: 30px;">
+        <h1 style="font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight:800; line-height:1.25; margin-bottom:16px;">
+          Understanding the Factory Method Design Pattern in .NET: A Simple 15-Minute Guide
+        </h1>
+        <p style="font-size:1.1rem; color:var(--text-med); line-height:1.7; margin-bottom:20px;">
+          Decoupling client code from concrete object creation. Learn how to dynamically instantiate strategy handlers and notification services based on configuration without tight coupling.
+        </p>
+        <div style="font-size:.85rem; color:var(--text-xlight); display:flex; align-items:center; gap:10px;">
+          <span>December 2025</span> •
+          <span class="blog-badge patterns">Design Patterns</span> •
+          <span>15 min read</span>
+        </div>
+        <div class="blog-hashtag-pills">
+          <span class="hashtag-pill">#design-patterns</span>
+          <span class="hashtag-pill">#factory-method</span>
+          <span class="hashtag-pill">#csharp</span>
+          <span class="hashtag-pill">#dotnet</span>
+          <span class="hashtag-pill">#solid-principles</span>
+        </div>
+      </div>
+
+      <!-- 2-COLUMN LAYOUT -->
+      <div class="blog-layout-2col">
+        
+        <!-- LEFT COLUMN: MAIN ARTICLE CONTENT -->
+        <div class="blog-article-body" style="font-size:1.05rem; line-height:1.85;">
+          
+          <h3 id="what-is-factory-method">1. What Is the Factory Method Pattern?</h3>
+          <p>The <strong>Factory Method Pattern</strong> is a creational design pattern that defines an interface for creating an object in a superclass, but allows subclasses to alter the type of objects that will be created.</p>
+          <p>In simple words: Instead of creating objects directly using the <code>new</code> keyword inside your business logic, you ask a dedicated Factory method to create the object for you.</p>
+
+          <div style="background:var(--bg-alt); padding:22px; border-radius:var(--radius-md); margin:24px 0; border:1px solid var(--border);">
+            <div style="font-weight:700; font-size:1.05rem; color:var(--primary); margin-bottom:6px;">💡 Real-World Analogy</div>
+            <p style="margin-bottom:0; font-size:.98rem;">Think of ordering food at a restaurant. As a customer (Client Code), you ask the waiter for a <em>"Pizza"</em> or <em>"Burger"</em>. You don't go into the kitchen, buy raw flour, turn on the oven, and bake it yourself using <code>new Pizza()</code>. The kitchen (Factory) creates the dish and hands it back to you!</p>
+          </div>
+
+          <h3 id="the-problem">2. The Problem: Tight Coupling & Switch Bloat</h3>
+          <p>Suppose you are building a system that sends user notifications via Email, SMS, and Push Notifications. Without the Factory Method, developers often write giant <code>if/else</code> or <code>switch/case</code> statements directly inside controllers:</p>
+
+          <pre><code>// ❌ BAD: Tight Coupling & Violated Open/Closed Principle!
+public class NotificationController : ControllerBase
+{
+    public async Task&lt;IActionResult&gt; SendNotification(string channelType, string message)
+    {
+        INotification notification;
+
+        if (channelType == "Email")
+        {
+            notification = new EmailNotification("smtp.mail.com", 587);
+        }
+        else if (channelType == "SMS")
+        {
+            notification = new SmsNotification("SMS_GATEWAY_KEY");
+        }
+        else if (channelType == "Push")
+        {
+            notification = new PushNotification("FIREBASE_SERVER_KEY");
+        }
+        else
+        {
+            throw new NotSupportedException("Notification channel not supported.");
+        }
+
+        await notification.SendAsync(message);
+        return Ok("Sent successfully!");
+    }
+}</code></pre>
+
+          <p><strong>Why is this approach dangerous?</strong> Every time your company adds a 4th channel (like WhatsApp), you MUST open and edit <code>NotificationController</code>. This violates the <strong>Open/Closed Principle (OCP)</strong> and leads to huge, fragile controller classes.</p>
+
+          <h3 id="factory-solution">3. The Factory Method Solution in C#</h3>
+          <p>Let's refactor this cleanly into 4 simple, step-by-step components with clear explanations for each step.</p>
+
+          <h4 style="font-size:1.15rem; font-weight:700; color:var(--primary); margin:20px 0 8px 0;">Step 1: Define Product Interface (`INotification`)</h4>
+          <p><strong>Explanation:</strong> Before creating specific notification channels (Email, SMS, Push), we first define an abstraction interface. This interface forces all concrete notification types to follow a unified contract (having a <code>ChannelName</code> property and a <code>SendAsync</code> method). This ensures that client code can work with ANY notification type polymorphically without knowing the underlying implementation details!</p>
+
+          <pre><code>public interface INotification
+{
+    string ChannelName { get; }
+    Task SendAsync(string message);
+}</code></pre>
+
+          <h4 style="font-size:1.15rem; font-weight:700; color:var(--primary); margin:20px 0 8px 0;">Step 2: Implement Concrete Products (`EmailNotification`, `SmsNotification`)</h4>
+          <p><strong>Explanation:</strong> Next, we implement the <code>INotification</code> interface in concrete classes. Each concrete class contains the channel-specific delivery logic (e.g., SMTP settings for Email, HTTP API payload for SMS). Because they both implement <code>INotification</code>, they can be used interchangeably by the factory without breaking client code.</p>
+
+          <pre><code>public class EmailNotification : INotification
+{
+    public string ChannelName =&gt; "Email Channel";
+
+    public async Task SendAsync(string message)
+    {
+        // Channel-specific logic (e.g. SMTP client call)
+        Console.WriteLine($"[EMAIL] Sending email message: {message}");
+        await Task.CompletedTask;
+    }
+}
+
+public class SmsNotification : INotification
+{
+    public string ChannelName =&gt; "SMS Channel";
+
+    public async Task SendAsync(string message)
+    {
+        // Channel-specific logic (e.g. SMS Gateway API HTTP request)
+        Console.WriteLine($"[SMS] Sending SMS message: {message}");
+        await Task.CompletedTask;
+    }
+}</code></pre>
+
+          <h4 style="font-size:1.15rem; font-weight:700; color:var(--primary); margin:20px 0 8px 0;">Step 3: Define Abstract Creator (`NotificationFactory`)</h4>
+          <p><strong>Explanation:</strong> The Creator class declares the abstract <code>CreateNotification()</code> Factory Method. Notice that <code>NotificationFactory</code> can also contain core business workflows (like logging, retry mechanisms, or auditing) in <code>DeliverNotificationAsync()</code> that rely on the product created by the Factory Method!</p>
+
+          <pre><code>public abstract class NotificationFactory
+{
+    // 🔑 The Factory Method declared here!
+    public abstract INotification CreateNotification();
+
+    // High-level template workflow relying on the created product
+    public async Task DeliverNotificationAsync(string message)
+    {
+        // Call the factory method to get a product
+        var notification = CreateNotification();
+        Console.WriteLine($"[FACTORY] Dispatching via {notification.ChannelName}");
+        await notification.SendAsync(message);
+    }
+}</code></pre>
+
+          <h4 style="font-size:1.15rem; font-weight:700; color:var(--primary); margin:20px 0 8px 0;">Step 4: Implement Concrete Factory Subclasses (`EmailNotificationFactory`, `SmsNotificationFactory`)</h4>
+          <p><strong>Explanation:</strong> Finally, we create concrete factory subclasses that override <code>CreateNotification()</code> to instantiate specific products. When client code calls <code>EmailNotificationFactory.CreateNotification()</code>, it gets back an <code>EmailNotification</code> instance cast as <code>INotification</code>!</p>
+
+          <pre><code>public class EmailNotificationFactory : NotificationFactory
+{
+    public override INotification CreateNotification() =&gt; new EmailNotification();
+}
+
+public class SmsNotificationFactory : NotificationFactory
+{
+    public override INotification CreateNotification() =&gt; new SmsNotification();
+}</code></pre>
+
+          <h3 id="aspnet-integration">4. Integrating with ASP.NET Core Dependency Injection</h3>
+          <p>You can register factories cleanly in <code>Program.cs</code> and resolve them dynamically without hardcoding:</p>
+
+          <pre><code>// Program.cs
+builder.Services.AddTransient&lt;EmailNotificationFactory&gt;();
+builder.Services.AddTransient&lt;SmsNotificationFactory&gt;();
+
+// Controller
+public class NotificationController : ControllerBase
+{
+    private readonly EmailNotificationFactory _emailFactory;
+
+    public NotificationController(EmailNotificationFactory emailFactory)
+    {
+        _emailFactory = emailFactory;
+    }
+
+    [HttpPost("email")]
+    public async Task&lt;IActionResult&gt; SendEmail([FromBody] string text)
+    {
+        await _emailFactory.DeliverNotificationAsync(text);
+        return Ok();
+    }
+}</code></pre>
+
+          <h3 id="benefits">5. Key Benefits & When to Use</h3>
+          <table style="width:100%; border-collapse:collapse; margin:24px 0; font-size:.9rem;">
+            <thead>
+              <tr style="background:var(--bg-alt); border-bottom:2px solid var(--border); text-align:left;">
+                <th style="padding:12px;">Benefit</th>
+                <th style="padding:12px;">Why It Matters in Enterprise Software</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:12px;"><strong>Loose Coupling</strong></td>
+                <td style="padding:12px;">Client code does not care which concrete class gets created, only that it satisfies the interface.</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:12px;"><strong>Open/Closed Principle</strong></td>
+                <td style="padding:12px;">You can introduce new product types into the application without breaking existing client code.</td>
+              </tr>
+              <tr>
+                <td style="padding:12px;"><strong>Single Responsibility</strong></td>
+                <td style="padding:12px;">Object creation logic is isolated in one place, making unit testing far easier with mock objects.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3 id="conclusion">6. Conclusion</h3>
+          <p>The Factory Method pattern is an essential building block in modern .NET development. By separating object creation from execution, your code becomes modular, extensible, and ready for enterprise scale.</p>
+
+        </div>
+
+        <!-- RIGHT COLUMN: STICKY "ON THIS PAGE" SIDEBAR -->
+        <aside class="on-this-page-sidebar">
+          <div class="on-this-page-card">
+            <div class="on-this-page-title">On This Page</div>
+            <ul class="on-this-page-list">
+              <li><a href="#what-is-factory-method">What Is Factory Method?</a></li>
+              <li><a href="#the-problem">The Problem (Tight Coupling)</a></li>
+              <li><a href="#factory-solution">The Factory Method Solution</a></li>
+              <li><a href="#aspnet-integration">ASP.NET Core DI Integration</a></li>
+              <li><a href="#benefits">Key Benefits & Comparison</a></li>
+              <li><a href="#conclusion">Conclusion</a></li>
+            </ul>
+          </div>
+        </aside>
+
+      </div>
+
+    </div>
+  </article>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <a href="../../index.html" class="nav-logo">
+            <div class="logo-avatar">SP</div>
+            <span class="logo-name">Suraj Prajapati</span>
+          </a>
+          <p>.NET Core & C# Backend Engineering Blog<br/>Written by Suraj Prajapati.</p>
+        </div>
+        <div class="footer-links">
+          <a href="../../index.html#hero">Home</a>
+          <a href="../../index.html#about">About</a>
+          <a href="../../index.html#skills">Skills</a>
+          <a href="../../projects.html">Projects</a>
+          <a href="../../blog.html">Blog</a>
+          <a href="../../index.html#contact">Contact</a>
+        </div>
+        <div class="footer-socials">
+          <a href="https://www.freelancer.in/u/SurajBelduha08" target="_blank" rel="noopener" class="social-link">Freelancer</a>
+          <a href="https://www.linkedin.com/in/suraj-prajapati-201ba222b/" target="_blank" rel="noopener" class="social-link">LinkedIn</a>
+          <a href="https://github.com/surajbelduha" target="_blank" rel="noopener" class="social-link">GitHub</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Suraj Prajapati. All rights reserved.</p>
+        <a href="#" class="back-to-top">↑ Back to Top</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- GOOGLE TRANSLATE SCRIPT -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,gu,es,fr,de',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <script src="../../script.js"></script>
+</body>
+</html>

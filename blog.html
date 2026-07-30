@@ -17,14 +17,15 @@
   <nav class="navbar" id="navbar">
     <div class="nav-container">
       <a href="index.html" class="nav-logo">
-        <span class="logo-bracket">&lt;</span>SP<span class="logo-bracket">/&gt;</span>
+        <div class="logo-avatar">SP</div>
+        <span class="logo-name">Suraj Prajapati</span>
       </a>
       <ul class="nav-links" id="navLinks">
         <li><a href="index.html#hero" class="nav-link">Home</a></li>
         <li><a href="index.html#about" class="nav-link">About</a></li>
         <li><a href="index.html#skills" class="nav-link">Skills</a></li>
         <li><a href="index.html#experience" class="nav-link">Experience</a></li>
-        <li><a href="index.html#projects" class="nav-link">Projects</a></li>
+        <li><a href="projects.html" class="nav-link">Projects</a></li>
         <li><a href="blog.html" class="nav-link active">Blog</a></li>
         <li><a href="index.html#contact" class="nav-link">Contact</a></li>
       </ul>
@@ -58,6 +59,7 @@
         <div class="blog-tags-filter" id="blogFilterTags">
           <button class="filter-tag active" data-tag="all">All Articles</button>
           <button class="filter-tag" data-tag="netcore">.NET Core 8</button>
+          <button class="filter-tag" data-tag="patterns">Design Patterns</button>
           <button class="filter-tag" data-tag="fintech">FinTech & Webhooks</button>
           <button class="filter-tag" data-tag="database">SQL & Dapper</button>
           <button class="filter-tag" data-tag="architecture">Clean Architecture</button>
@@ -77,13 +79,13 @@
             <span class="blog-badge fintech">FinTech Security</span>
             <span class="blog-read-time">7 min read</span>
           </div>
-          <h2 class="blog-card-title">Building Bank-Grade Webhook Verification in ASP.NET Core with HMAC-SHA256</h2>
+          <h2 class="blog-card-title"><a href="blogs/fintech/hmac-webhooks.html" style="color:inherit; text-decoration:none;">Building Bank-Grade Webhook Verification in ASP.NET Core with HMAC-SHA256</a></h2>
           <p class="blog-card-excerpt">
             How to secure incoming payment notifications (Pay-in & Payout callbacks) against replay attacks and request tampering using cryptographic signatures and idempotency keys.
           </p>
           <div class="blog-card-footer">
             <span class="blog-date">July 2026</span>
-            <button class="read-article-btn" onclick="openBlogModal('post-1')">Read Article →</button>
+            <a href="blogs/fintech/hmac-webhooks.html" class="read-article-btn">Read Full Guide →</a>
           </div>
         </article>
 
@@ -93,13 +95,13 @@
             <span class="blog-badge database">SQL & Dapper</span>
             <span class="blog-read-time">9 min read</span>
           </div>
-          <h2 class="blog-card-title">Why We Chose Dapper Over Entity Framework Core for FinTech Transaction Processing</h2>
+          <h2 class="blog-card-title"><a href="blogs/sql/dapper-vs-efcore.html" style="color:inherit; text-decoration:none;">Why We Chose Dapper Over Entity Framework Core for FinTech Transaction Processing</a></h2>
           <p class="blog-card-excerpt">
             A deep dive into high-throughput database interactions. Comparing raw execution times, memory allocations, and query plan control when handling 10,000+ financial records per second.
           </p>
           <div class="blog-card-footer">
             <span class="blog-date">June 2026</span>
-            <button class="read-article-btn" onclick="openBlogModal('post-2')">Read Article →</button>
+            <a href="blogs/sql/dapper-vs-efcore.html" class="read-article-btn">Read Full Guide →</a>
           </div>
         </article>
 
@@ -109,13 +111,13 @@
             <span class="blog-badge architecture">Clean Architecture</span>
             <span class="blog-read-time">10 min read</span>
           </div>
-          <h2 class="blog-card-title">Structuring Enterprise .NET Core Solutions: CQRS & MediatR in Practice</h2>
+          <h2 class="blog-card-title"><a href="blogs/architecture/cqrs-mediatr.html" style="color:inherit; text-decoration:none;">Structuring Enterprise .NET Core Solutions: CQRS & MediatR in Practice</a></h2>
           <p class="blog-card-excerpt">
             Decoupling domain logic from API controllers. Learn how CQRS and MediatR pipelines keep payment systems maintainable, unit-testable, and scalable over time.
           </p>
           <div class="blog-card-footer">
             <span class="blog-date">May 2026</span>
-            <button class="read-article-btn" onclick="openBlogModal('post-3')">Read Article →</button>
+            <a href="blogs/architecture/cqrs-mediatr.html" class="read-article-btn">Read Full Guide →</a>
           </div>
         </article>
 
@@ -125,13 +127,13 @@
             <span class="blog-badge netcore">.NET Core 8</span>
             <span class="blog-read-time">6 min read</span>
           </div>
-          <h2 class="blog-card-title">Top 5 Performance Optimizations in .NET 8 for Low-Latency Microservices</h2>
+          <h2 class="blog-card-title"><a href="blogs/dotnet/net8-performance.html" style="color:inherit; text-decoration:none;">Top 5 Performance Optimizations in .NET 8 for Low-Latency Microservices</a></h2>
           <p class="blog-card-excerpt">
             Utilizing Native AOT, System.Threading.Channels, ValueTask, and ArrayPool&lt;T&gt; to achieve sub-millisecond response times in production API endpoints.
           </p>
           <div class="blog-card-footer">
             <span class="blog-date">April 2026</span>
-            <button class="read-article-btn" onclick="openBlogModal('post-4')">Read Article →</button>
+            <a href="blogs/dotnet/net8-performance.html" class="read-article-btn">Read Full Guide →</a>
           </div>
         </article>
 
@@ -141,13 +143,13 @@
             <span class="blog-badge fintech">FinTech Architecture</span>
             <span class="blog-read-time">8 min read</span>
           </div>
-          <h2 class="blog-card-title">Designing Automated Bank Reconciliation Engines in C#</h2>
+          <h2 class="blog-card-title"><a href="blogs/fintech/bank-reconciliation.html" style="color:inherit; text-decoration:none;">Designing Automated Bank Reconciliation Engines in C#</a></h2>
           <p class="blog-card-excerpt">
             Automating daily balance statements, transaction matching algorithms, and exception handling pipelines for Kotak Mahindra Bank and UPI payment gateways.
           </p>
           <div class="blog-card-footer">
             <span class="blog-date">March 2026</span>
-            <button class="read-article-btn" onclick="openBlogModal('post-5')">Read Article →</button>
+            <a href="blogs/fintech/bank-reconciliation.html" class="read-article-btn">Read Full Guide →</a>
           </div>
         </article>
 
@@ -157,13 +159,93 @@
             <span class="blog-badge database">Database Tuning</span>
             <span class="blog-read-time">11 min read</span>
           </div>
-          <h2 class="blog-card-title">Eliminating SQL Server Deadlocks in High-Concurrency Financial Databases</h2>
+          <h2 class="blog-card-title"><a href="blogs/sql/deadlocks-tuning.html" style="color:inherit; text-decoration:none;">Eliminating SQL Server Deadlocks in High-Concurrency Financial Databases</a></h2>
           <p class="blog-card-excerpt">
             Practical strategies for optimizing table indexes, understanding isolation levels (READ COMMITTED SNAPSHOT), and writing lock-safe stored procedures.
           </p>
           <div class="blog-card-footer">
             <span class="blog-date">February 2026</span>
-            <button class="read-article-btn" onclick="openBlogModal('post-6')">Read Article →</button>
+            <a href="blogs/sql/deadlocks-tuning.html" class="read-article-btn">Read Full Guide →</a>
+          </div>
+        </article>
+
+        <!-- ARTICLE 7: LIFETIMES -->
+        <article class="blog-card" data-category="netcore" data-keywords="singleton scoped transient service lifetime dependency injection di net 8 c#">
+          <div class="blog-card-meta">
+            <span class="blog-badge netcore">.NET Core 8</span>
+            <span class="blog-read-time">8 min read</span>
+          </div>
+          <h2 class="blog-card-title"><a href="blogs/dotnet/di-lifetimes.html" style="color:inherit; text-decoration:none;">Understanding Singleton, Scoped, and Transient Lifetimes in .NET 8</a></h2>
+          <p class="blog-card-excerpt">
+            Demystifying Dependency Injection in ASP.NET Core with real-world analogies, memory behavior, and avoiding memory leak pitfalls.
+          </p>
+          <div class="blog-card-footer">
+            <span class="blog-date">January 2026</span>
+            <a href="blogs/dotnet/di-lifetimes.html" class="read-article-btn">Read Full Guide →</a>
+          </div>
+        </article>
+
+        <!-- ARTICLE 8: IENUMERABLE DI -->
+        <article class="blog-card" data-category="architecture" data-keywords="ienumerable dependency injection keyed services factory clean code refactoring c#">
+          <div class="blog-card-meta">
+            <span class="blog-badge architecture">Clean Code</span>
+            <span class="blog-read-time">6 min read</span>
+          </div>
+          <h2 class="blog-card-title"><a href="blogs/patterns/stop-ienumerable.html" style="color:inherit; text-decoration:none;">Stop Injecting IEnumerable Just to Pick One Service in C#</a></h2>
+          <p class="blog-card-excerpt">
+            Why injecting IEnumerable&lt;IService&gt; creates performance overhead and unneeded complexity, and how to use .NET 8 Keyed Services or Factory Resolvers instead.
+          </p>
+          <div class="blog-card-footer">
+            <span class="blog-date">January 2026</span>
+            <a href="blogs/patterns/stop-ienumerable.html" class="read-article-btn">Read Full Guide →</a>
+          </div>
+        </article>
+
+        <!-- ARTICLE 9: BUILDER PATTERN -->
+        <article class="blog-card" data-category="patterns" data-keywords="builder design pattern fluent API object creation c# net 8 gang of four">
+          <div class="blog-card-meta">
+            <span class="blog-badge patterns">Design Patterns</span>
+            <span class="blog-read-time">7 min read</span>
+          </div>
+          <h2 class="blog-card-title"><a href="blogs/patterns/builder-pattern.html" style="color:inherit; text-decoration:none;">Understanding the Builder Design Pattern in .NET</a></h2>
+          <p class="blog-card-excerpt">
+            Constructing complex domain objects step-by-step using fluent interfaces. Say goodbye to giant constructor parameters and invalid state instantiation.
+          </p>
+          <div class="blog-card-footer">
+            <span class="blog-date">December 2025</span>
+            <a href="blogs/patterns/builder-pattern.html" class="read-article-btn">Read Full Guide →</a>
+          </div>
+        </article>
+
+        <!-- ARTICLE 10: FACTORY METHOD -->
+        <article class="blog-card" data-category="patterns" data-keywords="factory method design pattern creational polymorphism payment gateway c#">
+          <div class="blog-card-meta">
+            <span class="blog-badge patterns">Design Patterns</span>
+            <span class="blog-read-time">15 min read</span>
+          </div>
+          <h2 class="blog-card-title"><a href="blogs/patterns/factory-pattern.html" style="color:inherit; text-decoration:none;">Understanding the Factory Method Design Pattern in .NET</a></h2>
+          <p class="blog-card-excerpt">
+            Decoupling client code from concrete object creation. Learn how to dynamically instantiate strategy handlers and notification services based on configuration without tight coupling.
+          </p>
+          <div class="blog-card-footer">
+            <span class="blog-date">December 2025</span>
+            <a href="blogs/patterns/factory-pattern.html" class="read-article-btn">Read Full Guide →</a>
+          </div>
+        </article>
+
+        <!-- ARTICLE 11: SINGLETON PATTERN -->
+        <article class="blog-card" data-category="patterns" data-keywords="singleton design pattern thread safety lazy initialization captive dependency c#">
+          <div class="blog-card-meta">
+            <span class="blog-badge patterns">Design Patterns</span>
+            <span class="blog-read-time">7 min read</span>
+          </div>
+          <h2 class="blog-card-title"><a href="blogs/patterns/singleton-pattern.html" style="color:inherit; text-decoration:none;">Understanding the Singleton Design Pattern in .NET & Avoiding Captive Dependencies</a></h2>
+          <p class="blog-card-excerpt">
+            Thread-safe Lazy&lt;T&gt; initialization, global state management, and avoiding memory leaks caused by captive dependency injections in ASP.NET Core.
+          </p>
+          <div class="blog-card-footer">
+            <span class="blog-date">November 2025</span>
+            <a href="blogs/patterns/singleton-pattern.html" class="read-article-btn">Read Full Guide →</a>
           </div>
         </article>
 
@@ -187,7 +269,8 @@
       <div class="footer-content">
         <div class="footer-brand">
           <a href="index.html" class="nav-logo">
-            <span class="logo-bracket">&lt;</span>SP<span class="logo-bracket">/&gt;</span>
+            <div class="logo-avatar">SP</div>
+            <span class="logo-name">Suraj Prajapati</span>
           </a>
           <p>.NET Core & C# Backend Engineering Blog<br/>Written by Suraj Prajapati.</p>
         </div>
@@ -207,7 +290,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© 2026 Suraj Prajapati. Crafted with HTML5, CSS3 & JavaScript.</p>
+        <p>© 2026 Suraj Prajapati. All rights reserved.</p>
         <a href="#" class="back-to-top">↑ Back to Top</a>
       </div>
     </div>

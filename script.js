@@ -164,6 +164,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const testApiBtn = document.getElementById('testApiBtn');
   const apiPayload = document.getElementById('apiPayload');
   const apiResponse = document.getElementById('apiResponse');
+  const gatewaySelector = document.getElementById('gatewaySelector');
+  const apiEndpointText = document.getElementById('apiEndpointText');
+
+  const gatewayTemplates = {
+    upipayin: {
+      endpoint: '/api/v1/payment/upi/initiate',
+      payload: `{\n  // [PARAM] merchantId: Unique merchant ID registered in FinTech platform\n  "merchantId": "MERCHANT_PAY_89201",\n  // [PARAM] amount: Transaction amount in INR\n  "amount": 1500.00,\n  // [PARAM] currency: ISO 4217 Currency Code\n  "currency": "INR",\n  // [PARAM] paymentMethod: Channel (UPI | IMPS | NEFT)\n  "paymentMethod": "UPI",\n  // [PARAM] customerVpa: Customer Virtual Payment Address\n  "customerVpa": "user@upi",\n  // [PARAM] callbackUrl: Webhook URL for async notification\n  "callbackUrl": "https://merchant.com/api/v1/webhook"\n}`
+    },
+    impspayout: {
+      endpoint: '/api/v1/payout/disburse',
+      payload: `{\n  // [PARAM] merchantId: Payout merchant account identifier\n  "merchantId": "MERCHANT_PAYOUT_77102",\n  // [PARAM] amount: Payout disbursement value\n  "amount": 5000.00,\n  // [PARAM] beneficiaryAccount: Bank Account Number\n  "beneficiaryAccount": "918029381920",\n  // [PARAM] ifscCode: Bank Branch IFSC Code\n  "ifscCode": "BANK0000181",\n  // [PARAM] payoutMode: IMPS | NEFT | RTGS\n  "payoutMode": "IMPS",\n  // [PARAM] callbackUrl: Webhook status update URL\n  "callbackUrl": "https://merchant.com/api/v1/payout-webhook"\n}`
+    },
+    cardcharge: {
+      endpoint: '/api/v1/payment/card-charge',
+      payload: `{\n  // [PARAM] merchantId: Merchant Account Code\n  "merchantId": "MERCHANT_CARD_3391",\n  // [PARAM] amount: Charge Amount\n  "amount": 2999.00,\n  // [PARAM] cardToken: Encrypted Payment Card Token\n  "cardToken": "tok_visa_safe_99182",\n  // [PARAM] cvvVerified: 3D Secure Verification Flag\n  "cvvVerified": true,\n  // [PARAM] callbackUrl: Webhook notification endpoint\n  "callbackUrl": "https://merchant.com/api/v1/card-webhook"\n}`
+    }
+  };
+
+  if (gatewaySelector && apiPayload && apiEndpointText) {
+    gatewaySelector.addEventListener('change', (e) => {
+      const selected = gatewayTemplates[e.target.value] || gatewayTemplates.upipayin;
+      apiEndpointText.textContent = selected.endpoint;
+      apiPayload.value = selected.payload;
+    });
+  }
 
   if (testApiBtn && apiResponse) {
     testApiBtn.addEventListener('click', () => {
@@ -171,34 +196,73 @@ document.addEventListener('DOMContentLoaded', () => {
       testApiBtn.disabled = true;
 
       setTimeout(() => {
-        let payloadObj = {};
-        try {
-          payloadObj = JSON.parse(apiPayload.value);
-        } catch(e) {
-          payloadObj = { merchantId: "MERCHANT_89201", amount: 1500.00 };
-        }
-
+        const selectedGw = gatewaySelector ? gatewaySelector.value : 'upipayin';
         const txnId = "TXN_" + Math.random().toString(36).substring(2, 10).toUpperCase();
-        const fakeHmac = "sha256_" + Math.random().toString(36).substring(2, 18);
+        const bankRrn = Math.floor(100000000000 + Math.random() * 900000000000).toString();
+        const fakeHmac = "sha256_" + Math.random().toString(36).substring(2, 22);
 
-        const responseObj = {
-          statusCode: 200,
-          success: true,
-          timestamp: new Date().toISOString(),
-          data: {
-            transactionId: txnId,
-            merchantId: payloadObj.merchantId || "MERCHANT_89201",
-            amount: payloadObj.amount || 1500.00,
-            currency: payloadObj.currency || "INR",
-            status: "INITIATED",
-            gatewayReference: "KOTAK_UPI_" + Math.floor(100000 + Math.random() * 900000),
-            security: {
-              signature: fakeHmac,
-              idempotencyKeyVerified: true
-            }
-          },
-          message: "Payment request successfully initiated via Jigropay Gateway Engine."
-        };
+        let responseObj = {};
+
+        if (selectedGw === 'upipayin') {
+          responseObj = {
+            statusCode: 200,
+            success: true,
+            timestamp: new Date().toISOString(),
+            data: {
+              transactionId: txnId, // [PARAM] Platform reference
+              merchantId: "MERCHANT_PAY_89201", // [PARAM] Verified Merchant
+              amount: 1500.00, // [PARAM] Final processed amount
+              currency: "INR", // [PARAM] Currency
+              bankReferenceNo: bankRrn, // [PARAM] Bank 12-digit RRN
+              status: "SUCCESS", // [PARAM] Payment Status
+              gatewayLatencyMs: Math.floor(80 + Math.random() * 60), // [PARAM] Turnaround time in ms
+              security: {
+                signature: fakeHmac, // [PARAM] HMAC-SHA256 hash for validation
+                idempotencyVerified: true // [PARAM] Anti-duplicate flag
+              }
+            },
+            message: "Payment successfully processed via Primary Bank Gateway."
+          };
+        } else if (selectedGw === 'impspayout') {
+          responseObj = {
+            statusCode: 200,
+            success: true,
+            timestamp: new Date().toISOString(),
+            data: {
+              payoutId: txnId, // [PARAM] Payout System Reference
+              merchantId: "MERCHANT_PAYOUT_77102",
+              disbursedAmount: 5000.00,
+              utrNumber: "UTR" + bankRrn, // [PARAM] Bank UTR Number
+              payoutMode: "IMPS",
+              status: "DISBURSED", // [PARAM] Instant Disbursal Status
+              gatewayLatencyMs: Math.floor(110 + Math.random() * 80),
+              security: {
+                signature: fakeHmac,
+                idempotencyVerified: true
+              }
+            },
+            message: "IMPS Payout successfully disbursed via Payout Channel."
+          };
+        } else {
+          responseObj = {
+            statusCode: 200,
+            success: true,
+            timestamp: new Date().toISOString(),
+            data: {
+              chargeId: txnId,
+              merchantId: "MERCHANT_CARD_3391",
+              chargedAmount: 2999.00,
+              authCode: "AUTH_" + Math.floor(100000 + Math.random() * 900000), // [PARAM] Card Auth Code
+              status: "CAPTURED",
+              gatewayLatencyMs: Math.floor(95 + Math.random() * 50),
+              security: {
+                signature: fakeHmac,
+                idempotencyVerified: true
+              }
+            },
+            message: "Card charge successfully captured via Secure Card Gateway."
+          };
+        }
 
         apiResponse.innerHTML = `<code>${JSON.stringify(responseObj, null, 2)}</code>`;
         testApiBtn.disabled = false;
@@ -498,6 +562,326 @@ finally
           </ul>
         </div>
       `
+    },
+    'post-7': {
+      title: 'Understanding Singleton, Scoped, and Transient Lifetimes in .NET 8',
+      badge: '.NET Core 8',
+      date: 'January 2026',
+      content: `
+        <div class="blog-article-body">
+          <span class="blog-badge netcore">.NET Core 8</span>
+          <h2>Understanding Singleton, Scoped, and Transient Lifetimes in .NET 8</h2>
+          <p><em>Published on January 2026 • By Suraj Prajapati</em></p>
+          <hr style="border-color:var(--border); margin: 16px 0;" />
+
+          <p>Dependency Injection (DI) is a core design pattern in ASP.NET Core used to achieve Inversion of Control (IoC). When registering a service in the DI container, you must specify its <strong>service lifetime</strong>.</p>
+          
+          <div style="background:var(--bg-alt); padding:16px; border-radius:var(--radius-sm); margin:16px 0; border:1px solid var(--border);">
+            <strong>📌 What You Will Learn:</strong>
+            <ul style="margin: 8px 0 0 20px; font-size:.9rem;">
+              <li>Difference between Transient, Scoped, and Singleton lifetimes.</li>
+              <li>Real-life analogies to easily remember each lifetime.</li>
+              <li>Code example proving how object GUIDs change across scopes.</li>
+              <li>What Captive Dependencies are and how to avoid them.</li>
+            </ul>
+          </div>
+
+          <h3>1. Transient Lifetime (AddTransient)</h3>
+          <p><strong>Analogy:</strong> Disposable paper coffee cups — every time a customer orders coffee, a brand-new paper cup is created, used once, and thrown away.</p>
+          <p>A new instance is created <em>every single time</em> the service is requested from the DI container, even within the same HTTP request.</p>
+          <pre><code>// Good for lightweight, stateless processing services
+builder.Services.AddTransient&lt;IEmailValidator, EmailValidator&gt;();</code></pre>
+
+          <h3>2. Scoped Lifetime (AddScoped)</h3>
+          <p><strong>Analogy:</strong> A customer tray at a restaurant — shared throughout your single meal, but discarded when you finish and leave.</p>
+          <p>A single instance is created <em>once per HTTP request scope</em>. All components invoked during that HTTP request share the exact same instance.</p>
+          <pre><code>// Essential for DbContext, Unit of Work, and User Context per HTTP request
+builder.Services.AddScoped&lt;IApplicationDbContext, ApplicationDbContext&gt;();
+builder.Services.AddScoped&lt;IPaymentRepository, PaymentRepository&gt;();</code></pre>
+
+          <h3>3. Singleton Lifetime (AddSingleton)</h3>
+          <p><strong>Analogy:</strong> The main espresso machine in the coffee shop — created once when the shop opens and used by all employees for every customer all day.</p>
+          <p>A single instance is created <em>once when the application starts</em> and reused across the entire application lifecycle for all users and requests.</p>
+          <pre><code>// Good for thread-safe memory caches, configuration objects, and metrics
+builder.Services.AddSingleton&lt;IMemoryCache, MemoryCache&gt;();</code></pre>
+
+          <h3>Summary Comparison Table</h3>
+          <table style="width:100%; border-collapse:collapse; margin:20px 0; font-size:.88rem;">
+            <thead>
+              <tr style="background:var(--bg-alt); border-bottom:2px solid var(--border); text-align:left;">
+                <th style="padding:8px;">Lifetime</th>
+                <th style="padding:8px;">Creation Frequency</th>
+                <th style="padding:8px;">Typical Use Case</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:8px;"><strong>Transient</strong></td>
+                <td style="padding:8px;">Every time requested</td>
+                <td style="padding:8px;">Stateless helpers, lightweight utilities</td>
+              </tr>
+              <tr style="border-bottom:1px solid var(--border);">
+                <td style="padding:8px;"><strong>Scoped</strong></td>
+                <td style="padding:8px;">Once per HTTP Request</td>
+                <td style="padding:8px;">DbContext, Repositories, Request User Context</td>
+              </tr>
+              <tr>
+                <td style="padding:8px;"><strong>Singleton</strong></td>
+                <td style="padding:8px;">Once per App Lifetime</td>
+                <td style="padding:8px;">Memory Cache, Feature Flags, Metrics Logger</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `
+    },
+    'post-8': {
+      title: 'Stop Injecting IEnumerable Just to Pick One Service in C#',
+      badge: 'Clean Code',
+      date: 'January 2026',
+      content: `
+        <div class="blog-article-body">
+          <span class="blog-badge architecture">Clean Code</span>
+          <h2>Stop Injecting IEnumerable Just to Pick One Service in C#</h2>
+          <p><em>Published on January 2026 • By Suraj Prajapati</em></p>
+          <hr style="border-color:var(--border); margin: 16px 0;" />
+
+          <p>A common architectural anti-pattern in C# applications when supporting multiple strategies (e.g. payment gateways like Kotak, Payol, SafePay) is injecting <code>IEnumerable&lt;IPaymentGateway&gt;</code> into a processing service and choosing one via LINQ.</p>
+
+          <h3>❌ The Bad Way: Injecting IEnumerable&lt;T&gt;</h3>
+          <pre><code>// ❌ BAD: Instantiates ALL registered services on every request!
+public class PaymentService
+{
+    private readonly IEnumerable&lt;IPaymentGateway&gt; _gateways;
+
+    public PaymentService(IEnumerable&lt;IPaymentGateway&gt; gateways)
+    {
+        _gateways = gateways; // DI Container resolves ALL implementations!
+    }
+
+    public async Task ProcessPaymentAsync(string gatewayName, PaymentRequest req)
+    {
+        var gateway = _gateways.FirstOrDefault(g =&gt; g.Name == gatewayName);
+        if (gateway == null) throw new NotSupportedException();
+        await gateway.ExecuteAsync(req);
+    }
+}</code></pre>
+
+          <p><strong>Why is this bad?</strong> It instantiates <em>every single payment gateway class</em> registered in DI, creating unnecessary objects, connecting to unused databases/APIs, and increasing garbage collection overhead.</p>
+
+          <h3>✅ The Good Way 1: .NET 8 Native Keyed Services</h3>
+          <p>Starting with .NET 8, C# natively supports <strong>Keyed Services</strong> using <code>AddKeyedScoped</code> and <code>[FromKeyedServices]</code> attribute:</p>
+
+          <pre><code>// 1. Program.cs Registration
+builder.Services.AddKeyedScoped&lt;IPaymentGateway, KotakGateway&gt;("Kotak");
+builder.Services.AddKeyedScoped&lt;IPaymentGateway, PayolGateway&gt;("Payol");
+builder.Services.AddKeyedScoped&lt;IPaymentGateway, SafePayGateway&gt;("SafePay");
+
+// 2. Direct Resolution in API Controller / Handler
+public class PaymentController : ControllerBase
+{
+    public async Task&lt;IActionResult&gt; Process(
+        [FromKeyedServices("Kotak")] IPaymentGateway gateway, 
+        PaymentRequest req)
+    {
+        await gateway.ExecuteAsync(req);
+        return Ok();
+    }
+}</code></pre>
+
+          <h3>✅ The Good Way 2: Factory Resolver Delegate</h3>
+          <pre><code>// Program.cs
+public delegate IPaymentGateway GatewayResolver(string name);
+
+builder.Services.AddScoped&lt;GatewayResolver&gt;(sp =&gt; name =&gt; name switch
+{
+    "Kotak" =&gt; sp.GetRequiredService&lt;KotakGateway&gt;(),
+    "Payol" =&gt; sp.GetRequiredService&lt;PayolGateway&gt;(),
+    _ =&gt; throw new NotSupportedException($"Gateway '{name}' is not registered.")
+});</code></pre>
+        </div>
+      `
+    },
+    'post-9': {
+      title: 'Understanding the Builder Design Pattern in .NET',
+      badge: 'Design Patterns',
+      date: 'December 2025',
+      content: `
+        <div class="blog-article-body">
+          <span class="blog-badge patterns">Design Patterns</span>
+          <h2>Understanding the Builder Design Pattern in .NET</h2>
+          <p><em>Published on December 2025 • By Suraj Prajapati</em></p>
+          <hr style="border-color:var(--border); margin: 16px 0;" />
+
+          <p>The <strong>Builder Pattern</strong> is a creational design pattern that allows you to construct complex objects step-by-step using a clean, readable, fluent interface.</p>
+
+          <h3>❌ The Problem: Telescoping Constructor Anti-Pattern</h3>
+          <pre><code>// ❌ Hard to read, easy to pass parameters in wrong order!
+var order = new Order("ORD_101", 1500.00m, "INR", "UPI", "John", "Doe", "Mumbai", "400001", true, false);</code></pre>
+
+          <h3>✅ The Solution: Fluent Builder Pattern in C#</h3>
+          <pre><code>public class OrderBuilder
+{
+    private string _orderId = default!;
+    private decimal _amount;
+    private string _currency = "INR";
+    private string _customerName = default!;
+    private string _paymentMethod = "UPI";
+
+    public OrderBuilder WithId(string orderId)
+    {
+        _orderId = orderId;
+        return this;
+    }
+
+    public OrderBuilder WithAmount(decimal amount)
+    {
+        if (amount &lt;= 0) throw new ArgumentException("Amount must be greater than zero.");
+        _amount = amount;
+        return this;
+    }
+
+    public OrderBuilder WithCustomer(string name)
+    {
+        _customerName = name;
+        return this;
+    }
+
+    public OrderBuilder ViaPaymentMethod(string method)
+    {
+        _paymentMethod = method;
+        return this;
+    }
+
+    public Order Build()
+    {
+        // Validation logic in Build() guarantees a valid object
+        if (string.IsNullOrEmpty(_orderId)) throw new InvalidOperationException("OrderId is required.");
+        if (string.IsNullOrEmpty(_customerName)) throw new InvalidOperationException("Customer name is required.");
+
+        return new Order(_orderId, _amount, _currency, _customerName, _paymentMethod);
+    }
+}
+
+// Fluent Usage:
+var order = new OrderBuilder()
+    .WithId("ORD_101")
+    .WithCustomer("Suraj Prajapati")
+    .WithAmount(2500.00m)
+    .ViaPaymentMethod("UPI")
+    .Build();</code></pre>
+        </div>
+      `
+    },
+    'post-10': {
+      title: 'Understanding the Factory Method Design Pattern in .NET',
+      badge: 'Design Patterns',
+      date: 'December 2025',
+      content: `
+        <div class="blog-article-body">
+          <span class="blog-badge patterns">Design Patterns</span>
+          <h2>Understanding the Factory Method Design Pattern in .NET</h2>
+          <p><em>Published on December 2025 • By Suraj Prajapati</em></p>
+          <hr style="border-color:var(--border); margin: 16px 0;" />
+
+          <p>The <strong>Factory Method Pattern</strong> is a creational pattern that defines an interface for creating objects in a superclass, but lets subclasses or concrete factories decide which class to instantiate.</p>
+
+          <h3>Real-World FinTech Scenario</h3>
+          <p>Suppose your platform needs to process payments across multiple banking APIs (Kotak Mahindra, Payol, SafePay). Instead of tight coupling with <code>if/else</code> statements, use the Factory Method pattern.</p>
+
+          <h3>Step 1: Product Interface</h3>
+          <pre><code>public interface IPaymentGateway
+{
+    Task&lt;PaymentResult&gt; ProcessAsync(PaymentRequest request);
+}</code></pre>
+
+          <h3>Step 2: Abstract Factory & Concrete Implementations</h3>
+          <pre><code>public abstract class PaymentGatewayFactory
+{
+    // Factory Method
+    public abstract IPaymentGateway CreateGateway();
+
+    public async Task&lt;PaymentResult&gt; ExecutePaymentAsync(PaymentRequest req)
+    {
+        var gateway = CreateGateway(); // Encapsulated creation logic
+        return await gateway.ProcessAsync(req);
+    }
+}
+
+public class KotakBankGatewayFactory : PaymentGatewayFactory
+{
+    public override IPaymentGateway CreateGateway() =&gt; new KotakBankGateway();
+}
+
+public class PayolGatewayFactory : PaymentGatewayFactory
+{
+    public override IPaymentGateway CreateGateway() =&gt; new PayolGateway();
+}</code></pre>
+
+          <p><strong>Benefits:</strong> Adheres to the <strong>Open/Closed Principle (OCP)</strong>. Adding a 7th payment gateway only requires creating a new factory class without altering existing code!</p>
+        </div>
+      `
+    },
+    'post-11': {
+      title: 'Understanding the Singleton Design Pattern in .NET & Avoiding Captive Dependencies',
+      badge: 'Design Patterns',
+      date: 'November 2025',
+      content: `
+        <div class="blog-article-body">
+          <span class="blog-badge patterns">Design Patterns</span>
+          <h2>Understanding the Singleton Design Pattern in .NET & Avoiding Captive Dependencies</h2>
+          <p><em>Published on November 2025 • By Suraj Prajapati</em></p>
+          <hr style="border-color:var(--border); margin: 16px 0;" />
+
+          <p>The <strong>Singleton Pattern</strong> ensures that a class has only one instance throughout the lifetime of the application and provides a global point of access to it.</p>
+
+          <h3>1. Thread-Safe Lazy Singleton in C#</h3>
+          <pre><code>public sealed class GlobalCurrencyCache
+{
+    private static readonly Lazy&lt;GlobalCurrencyCache&gt; _instance = 
+        new Lazy&lt;GlobalCurrencyCache&gt;(() =&gt; new GlobalCurrencyCache());
+
+    public static GlobalCurrencyCache Instance =&gt; _instance.Value;
+
+    private GlobalCurrencyCache()
+    {
+        // Private constructor prevents external instantiation
+    }
+}</code></pre>
+
+          <h3>2. Beware of Captive Dependencies!</h3>
+          <p>A <strong>Captive Dependency</strong> occurs when a service with a long lifetime (e.g. Singleton) holds onto a service with a shorter lifetime (e.g. Scoped <code>DbContext</code>).</p>
+          
+          <pre><code>// ❌ BAD: Captive Dependency! DbContext is kept alive forever!
+public class MetricCollectorService // Singleton
+{
+    private readonly ApplicationDbContext _db; // Scoped DbContext!
+    public MetricCollectorService(ApplicationDbContext db)
+    {
+        _db = db;
+    }
+}
+
+// ✅ GOOD SOLUTION: Inject IServiceScopeFactory in Singleton
+public class MetricCollectorService
+{
+    private readonly IServiceScopeFactory _scopeFactory;
+
+    public MetricCollectorService(IServiceScopeFactory scopeFactory)
+    {
+        _scopeFactory = scopeFactory;
+    }
+
+    public async Task SaveMetricAsync(MetricLog log)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService&lt;ApplicationDbContext&gt;();
+        db.Metrics.Add(log);
+        await db.SaveChangesAsync();
+    }
+}</code></pre>
+        </div>
+      `
     }
   };
 
@@ -524,13 +908,126 @@ finally
     }
   };
 
-  const modalBackdrop = document.getElementById('blogModalBackdrop');
-  if (modalBackdrop) {
-    modalBackdrop.addEventListener('click', (e) => {
-      if (e.target === modalBackdrop) closeBlogModal();
+  /* ── 14. PROJECTS PAGE SEARCH & CATEGORY FILTER ── */
+  const projectSearchInput = document.getElementById('projectSearchInput');
+  const projectFilterTags = document.querySelectorAll('#projectFilterTags .filter-tag');
+  const projectCards = document.querySelectorAll('#projectsPageGrid .project-card');
+
+  if (projectSearchInput || projectFilterTags.length > 0) {
+    let activeCat = 'all';
+
+    const filterProjects = () => {
+      const query = projectSearchInput ? projectSearchInput.value.toLowerCase().trim() : '';
+
+      projectCards.forEach(card => {
+        const category = card.getAttribute('data-cat');
+        const stack = card.getAttribute('data-stack') || '';
+        const title = card.querySelector('.project-title')?.textContent.toLowerCase() || '';
+
+        const matchesCat = activeCat === 'all' || category === activeCat;
+        const matchesQuery = query === '' || stack.includes(query) || title.includes(query);
+
+        if (matchesCat && matchesQuery) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    };
+
+    projectFilterTags.forEach(tag => {
+      tag.addEventListener('click', () => {
+        projectFilterTags.forEach(t => t.classList.remove('active'));
+        tag.classList.add('active');
+        activeCat = tag.getAttribute('data-cat');
+        filterProjects();
+      });
+    });
+
+    if (projectSearchInput) {
+      projectSearchInput.addEventListener('input', filterProjects);
+    }
+  }
+
+  /* ── 15. PROJECT CASE STUDY MODAL READER ────── */
+  const projectCaseStudies = {
+    'proj-1': {
+      title: 'Jigropay — FinTech Merchant Payment Engine',
+      content: `
+        <div class="blog-article-body">
+          <span class="project-badge featured-badge">Flagship FinTech Engine</span>
+          <h2>Jigropay — Merchant Payment Platform</h2>
+          <p><em>Built with .NET Core 8, Dapper, SQL Server, C#, React, and REST APIs</em></p>
+          <hr style="border-color:var(--border); margin: 16px 0;" />
+          <h3>System Architecture Highlights</h3>
+          <ul>
+            <li><strong>6 Payment Gateway Integrations:</strong> Kotak Mahindra Bank, Payol, SolitPay, SafePay India, Brezatech, and DiasPay.</li>
+            <li><strong>Pay-in & Payout Channels:</strong> Supports UPI, Net Banking, Debit/Credit Cards, IMPS, NEFT, and RTGS operations.</li>
+            <li><strong>Bank Reconciliation:</strong> Automated daily Kotak Bank statement reconciliation pipeline to catch un-matched transactions.</li>
+            <li><strong>HMAC Webhook Protection:</strong> HMAC-SHA256 signature generation & verification with strict idempotency keys to prevent duplicate transactions.</li>
+          </ul>
+          <h3>Key Achievements</h3>
+          <p>Handled thousands of concurrent merchant transaction callbacks with 99.99% uptime and zero duplicate payout executions.</p>
+        </div>
+      `
+    },
+    'proj-2': {
+      title: 'Resource Management System (RMS)',
+      content: `
+        <div class="blog-article-body">
+          <span class="project-badge">Enterprise HR</span>
+          <h2>Resource Management System (RMS)</h2>
+          <p><em>Built with ASP.NET Core, React, SQL Server, and EF Core</em></p>
+          <hr style="border-color:var(--border); margin: 16px 0;" />
+          <p>Complete enterprise HR & Payroll platform for managing employee lifecycle, attendance, leaves, salary slips generation, and client invoicing.</p>
+        </div>
+      `
+    },
+    'proj-6': {
+      title: 'AQHR — HR Payroll System',
+      content: `
+        <div class="blog-article-body">
+          <span class="project-badge">HR & Payroll</span>
+          <h2>AQHR — HR Payroll System</h2>
+          <p><em>Built with ASP.NET Core, C#, SQL Server, and JavaScript</em></p>
+          <hr style="border-color:var(--border); margin: 16px 0;" />
+          <p>Human resource and payroll management system featuring employee profile management, attendance tracking, monthly salary calculations, and statutory compliance reporting modules.</p>
+        </div>
+      `
+    }
+  };
+
+  window.openProjectModal = function(projId) {
+    const backdrop = document.getElementById('projectModalBackdrop');
+    const content = document.getElementById('projectModalContent');
+    const study = projectCaseStudies[projId] || {
+      title: 'Project Case Study',
+      content: '<div class="blog-article-body"><h2>Case Study Details</h2><p>Case study coming soon!</p></div>'
+    };
+
+    if (backdrop && content) {
+      content.innerHTML = study.content;
+      backdrop.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+  };
+
+  window.closeProjectModal = function() {
+    const backdrop = document.getElementById('projectModalBackdrop');
+    if (backdrop) {
+      backdrop.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  };
+
+  const projectModalBackdrop = document.getElementById('projectModalBackdrop');
+  if (projectModalBackdrop) {
+    projectModalBackdrop.addEventListener('click', (e) => {
+      if (e.target === projectModalBackdrop) closeProjectModal();
     });
   }
 
-  console.log('%c👋 Hi! Welcome to Suraj Prajapati\'s Portfolio & .NET Blog', 'color: #3b82f6; font-size: 16px; font-weight: bold;');
+  console.log('%c👋 Hi! Welcome to Suraj Prajapati\'s Portfolio, Projects & .NET Blog', 'color: #3b82f6; font-size: 16px; font-weight: bold;');
 });
+
 

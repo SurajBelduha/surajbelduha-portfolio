@@ -20,13 +20,14 @@
   <nav class="navbar" id="navbar">
     <div class="nav-container">
       <a href="#hero" class="nav-logo">
-        <span class="logo-bracket">&lt;</span>SP<span class="logo-bracket">/&gt;</span>
+        <div class="logo-avatar">SP</div>
+        <span class="logo-name">Suraj Prajapati</span>
       </a>
       <ul class="nav-links" id="navLinks">
         <li><a href="#about" class="nav-link">About</a></li>
         <li><a href="#skills" class="nav-link">Skills</a></li>
         <li><a href="#experience" class="nav-link">Experience</a></li>
-        <li><a href="#projects" class="nav-link">Projects</a></li>
+        <li><a href="projects.html" class="nav-link">Projects</a></li>
         <li><a href="#playground" class="nav-link">API Sandbox</a></li>
         <li><a href="blog.html" class="nav-link">Blog</a></li>
         <li><a href="#contact" class="nav-link">Contact</a></li>
@@ -642,6 +643,9 @@
         </div>
 
       </div>
+      <div style="text-align:center; margin-top: 40px;">
+        <a href="projects.html" class="btn btn-primary btn-lg">Explore Detailed Case Studies →</a>
+      </div>
     </div>
   </section>
 
@@ -649,39 +653,80 @@
   <section class="section playground-section" id="playground">
     <div class="container">
       <div class="section-header">
-        <span class="section-tag">Interactive Feature</span>
-        <h2 class="section-title">Backend API <span class="highlight">Simulator</span></h2>
-        <p class="section-subtitle">Test Suraj's payment gateway request & signature generator live in your browser</p>
+        <span class="section-tag">Interactive Gateway Simulator</span>
+        <h2 class="section-title">FinTech API <span class="highlight">Sandbox & Parameter Guide</span></h2>
+        <p class="section-subtitle">Test payment gateway request & response parameters with live HMAC signature verification</p>
       </div>
+
       <div class="api-sandbox-card">
-        <div class="sandbox-header">
+        <!-- SANDBOX GATEWAY SELECTOR BAR -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; padding:16px 24px; background:var(--bg-alt); border-bottom:1px solid var(--border);">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <label style="font-weight:700; font-size:.9rem; color:var(--text-dark);">Select Payment Gateway Channel:</label>
+            <select id="gatewaySelector" style="background:var(--bg-card); color:var(--text-dark); border:1px solid var(--border); padding:8px 14px; border-radius:var(--radius-sm); font-size:.9rem; font-weight:600;">
+              <option value="upipayin">Primary Bank Gateway (UPI / Pay-in)</option>
+              <option value="impspayout">Direct Payout Channel (IMPS / NEFT)</option>
+              <option value="cardcharge">Secure Card Gateway (3DS / Webhook)</option>
+            </select>
+          </div>
           <div class="sandbox-title">
             <span class="http-badge post">POST</span>
-            <span class="api-endpoint">/api/v1/payment/initiate</span>
+            <span class="api-endpoint" id="apiEndpointText">/api/v1/payment/upi/initiate</span>
           </div>
           <button class="btn btn-primary btn-sm" id="testApiBtn">
             <span>Execute Request</span>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
           </button>
         </div>
+
         <div class="sandbox-body">
           <div class="sandbox-col">
-            <label class="sandbox-label">Request Payload (JSON)</label>
-            <textarea id="apiPayload" class="code-input" rows="8">{
-  "merchantId": "MERCHANT_89201",
+            <label class="sandbox-label">Request Payload (JSON with Parameter Comments)</label>
+            <textarea id="apiPayload" class="code-input" rows="12">{
+  // Merchant Identifier registered in FinTech platform
+  "merchantId": "MERCHANT_PAY_89201",
+  // Transaction Amount in INR (decimals)
   "amount": 1500.00,
+  // ISO 4217 Currency Code
   "currency": "INR",
+  // Payment Channel: UPI | IMPS | NEFT | RTGS | CARD
   "paymentMethod": "UPI",
+  // Customer VPA / UPI ID
   "customerVpa": "user@upi",
-  "callbackUrl": "https://merchant.com/webhook"
+  // Asynchronous Webhook Receiver Callback URL
+  "callbackUrl": "https://merchant.com/api/v1/webhook"
 }</textarea>
           </div>
           <div class="sandbox-col">
-            <label class="sandbox-label">API Response (Simulated ASP.NET Core Output)</label>
+            <label class="sandbox-label">Simulated ASP.NET Core 8 API Response</label>
             <pre class="code-output" id="apiResponse"><code>{
+  "statusCode": 200,
   "status": "Ready",
-  "message": "Click 'Execute Request' to initiate simulated transaction"
+  "message": "Click 'Execute Request' to initiate simulated transaction & view response parameters"
 }</code></pre>
+          </div>
+        </div>
+
+        <!-- PARAMETER DICTIONARY & EXPLANATIONS -->
+        <div style="padding:24px; background:var(--bg-card); border-top:1px solid var(--border);">
+          <h4 style="margin-top:0; margin-bottom:14px; font-size:1.05rem; color:var(--primary);">📋 Parameter Guide & Dictionary</h4>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px; font-size:.88rem;">
+            <div style="padding:12px; background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-sm);">
+              <strong style="color:var(--primary);">merchantId</strong>
+              <p style="margin:4px 0 0 0; color:var(--text-light);">Unique merchant account code mapped to API keys and settlement rules.</p>
+            </div>
+            <div style="padding:12px; background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-sm);">
+              <strong style="color:var(--primary);">amount & currency</strong>
+              <p style="margin:4px 0 0 0; color:var(--text-light);">Transaction value formatted in decimals along with ISO currency ("INR").</p>
+            </div>
+            <div style="padding:12px; background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-sm);">
+              <strong style="color:var(--primary);">signature (HMAC-SHA256)</strong>
+              <p style="margin:4px 0 0 0; color:var(--text-light);">Cryptographic signature hash generated from request payload + secret key.</p>
+            </div>
+            <div style="padding:12px; background:var(--bg-alt); border:1px solid var(--border); border-radius:var(--radius-sm);">
+              <strong style="color:var(--primary);">bankReferenceNo (RRN / UTR)</strong>
+              <p style="margin:4px 0 0 0; color:var(--text-light);">Unique 12-digit bank reference number assigned by gateway for reconciliation.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -822,7 +867,8 @@
       <div class="footer-content">
         <div class="footer-brand">
           <a href="#hero" class="nav-logo">
-            <span class="logo-bracket">&lt;</span>SP<span class="logo-bracket">/&gt;</span>
+            <div class="logo-avatar">SP</div>
+            <span class="logo-name">Suraj Prajapati</span>
           </a>
           <p>.NET Core & C# Backend Developer<br/>Specializing in FinTech, Payments & Scalable Systems.</p>
         </div>
@@ -842,7 +888,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© 2026 Suraj Prajapati. Crafted with HTML5, CSS3 & JavaScript.</p>
+        <p>© 2026 Suraj Prajapati. All rights reserved.</p>
         <a href="#hero" class="back-to-top" id="backToTop">↑ Back to Top</a>
       </div>
     </div>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Building Bank-Grade Webhook Verification in ASP.NET Core with HMAC-SHA256 | Suraj Prajapati</title>
+  <meta name="description" content="Learn how to secure incoming payment gateway callbacks using HMAC-SHA256 signatures, idempotency keys, and replay attack prevention in C#." />
+  <meta name="keywords" content="HMAC-SHA256 C#, ASP.NET Core Webhook Security, Payment Gateway Callbacks, Idempotency Keys C#" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../style.css" />
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="../../index.html" class="nav-logo">
+        <span class="logo-bracket">&lt;</span>SP<span class="logo-bracket">/&gt;</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="../../index.html#hero" class="nav-link">Home</a></li>
+        <li><a href="../../index.html#about" class="nav-link">About</a></li>
+        <li><a href="../../index.html#skills" class="nav-link">Skills</a></li>
+        <li><a href="../../projects.html" class="nav-link">Projects</a></li>
+        <li><a href="../../blog.html" class="nav-link active">Blog</a></li>
+        <li><a href="../../index.html#contact" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" title="Toggle Theme">
+          <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <a href="../../blog.html" class="btn btn-outline nav-cta">← All Articles</a>
+      </div>
+    </div>
+  </nav>
+
+  <article class="section blog-detail-section" style="padding-top: 130px;">
+    <div class="container" style="max-width: 860px;">
+      
+      <div class="blog-detail-header">
+        <div style="display:flex; gap:10px; align-items:center; margin-bottom:16px;">
+          <span class="blog-badge fintech">FinTech Security</span>
+          <span style="font-size:.85rem; color:var(--text-xlight);">July 2026 • 7 min read</span>
+        </div>
+        <h1 style="font-size: clamp(2.2rem, 4vw, 3rem); font-weight:800; line-height:1.2; margin-bottom:20px;">
+          Building Bank-Grade Webhook Verification in ASP.NET Core with HMAC-SHA256
+        </h1>
+        <div class="author-card-sm" style="display:flex; align-items:center; gap:14px; margin-bottom:30px; padding:12px 18px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-md);">
+          <img src="../../SurajImage.jpg" alt="Suraj Prajapati" style="width:48px; height:48px; border-radius:50%; object-fit:cover;" />
+          <div>
+            <strong style="display:block; font-size:.95rem;">Suraj Prajapati</strong>
+            <span style="font-size:.8rem; color:var(--text-light);">Senior .NET Backend Developer • FinTech Specialist</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="blog-article-body" style="font-size:1.05rem; line-height:1.8;">
+        <p>In high-volume payment processing platforms, incoming webhooks deliver status notifications for Pay-in and Payout operations. Securing these callback HTTP endpoints against request spoofing, replay attacks, and payload tampering is paramount.</p>
+
+        <h3>HMAC-SHA256 Signature Verification Service in C#</h3>
+        <pre><code>public class HmacValidationService
+{
+    public static bool VerifySignature(string rawBody, string secretKey, string headerSignature)
+    {
+        using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(secretKey));
+        var hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(rawBody));
+        var computedSignature = Convert.ToHexString(hashBytes).ToLower();
+
+        return CryptographicOperations.FixedTimeEquals(
+            Encoding.UTF8.GetBytes(computedSignature),
+            Encoding.UTF8.GetBytes(headerSignature.ToLower())
+        );
+    }
+}</code></pre>
+
+        <div style="margin-top:40px; padding:24px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); text-align:center;">
+          <a href="../../blog.html" class="btn btn-primary">← Back to All .NET Articles</a>
+        </div>
+      </div>
+
+    </div>
+  </article>
+
+  <footer class="footer">
+    <div class="container">
+      <p style="text-align:center;">© 2026 Suraj Prajapati. .NET Backend Specialist.</p>
+    </div>
+  </footer>
+  <script src="../../script.js"></script>
+</body>
+</html>

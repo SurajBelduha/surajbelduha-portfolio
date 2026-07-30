@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Featured Enterprise & FinTech Projects | Suraj Prajapati</title>
+  <meta name="description" content="Detailed portfolio of enterprise projects by Suraj Prajapati – FinTech Payment Platforms, HR/Payroll Systems, Healthcare SaaS, and Multi-tenant Software License Portals built with .NET Core 8, C#, SQL Server & React." />
+  <meta name="keywords" content="Jigropay, FinTech Payment Gateway, .NET Core Projects, C# Portfolio, Healthcare SaaS, HR Payroll System" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <div class="logo-avatar">SP</div>
+        <span class="logo-name">Suraj Prajapati</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#hero" class="nav-link">Home</a></li>
+        <li><a href="index.html#about" class="nav-link">About</a></li>
+        <li><a href="index.html#skills" class="nav-link">Skills</a></li>
+        <li><a href="index.html#experience" class="nav-link">Experience</a></li>
+        <li><a href="projects.html" class="nav-link active">Projects</a></li>
+        <li><a href="blog.html" class="nav-link">Blog</a></li>
+        <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" title="Toggle Theme" aria-label="Toggle theme">
+          <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <a href="index.html#contact" class="btn btn-primary nav-cta">Hire Me</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== PROJECTS HERO HEADER ===== -->
+  <section class="blog-hero">
+    <div class="container">
+      <div class="blog-hero-content">
+        <span class="section-tag">Portfolio Showcase</span>
+        <h1 class="blog-title">Featured <span class="highlight">Enterprise Systems</span></h1>
+        <p class="blog-subtitle">
+          In-depth architectural breakdowns of payment engines, SaaS portals, and enterprise backends built for high scalability, security, and performance.
+        </p>
+        <div class="blog-search-bar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="projectSearchInput" placeholder="Search projects by tech stack (e.g. .NET 8, Dapper, React, PostgreSQL)..." />
+        </div>
+        <div class="blog-tags-filter" id="projectFilterTags">
+          <button class="filter-tag active" data-cat="all">All Systems</button>
+          <button class="filter-tag" data-cat="fintech">FinTech & Payments</button>
+          <button class="filter-tag" data-cat="saas">SaaS & HR Systems</button>
+          <button class="filter-tag" data-cat="healthcare">Healthcare Tech</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROJECTS DETAILED GRID ===== -->
+  <section class="section blog-grid-section">
+    <div class="container">
+      <div class="projects-grid" id="projectsPageGrid">
+
+        <!-- PROJECT 1 -->
+        <div class="project-card featured" data-cat="fintech" data-stack="net core 8 dapper sql server c# payment api react webhook hmac">
+          <div class="project-header">
+            <div class="project-icon">💳</div>
+            <div class="project-links">
+              <span class="project-badge featured-badge">Flagship FinTech Engine</span>
+            </div>
+          </div>
+          <h3 class="project-title">Jigropay — FinTech Merchant Payment Platform</h3>
+          <p class="project-desc">
+            Enterprise-grade merchant payment platform supporting Pay-in (UPI, Card, Net Banking)
+            and Payout (IMPS, NEFT, RTGS) operations. Seamlessly integrates 6 major Indian payment gateways
+            (Kotak Mahindra Bank, Payol, SolitPay, SafePay India, Brezatech, DiasPay) with automated reconciliation and HMAC signature protection.
+          </p>
+          <div class="project-features">
+            <span>✅ Integrated 6 Bank/PG Gateways</span>
+            <span>✅ HMAC-SHA256 Security & Idempotency</span>
+            <span>✅ Kotak Bank Automated Reconciliation Engine</span>
+            <span>✅ Clean Architecture with MediatR & CQRS</span>
+          </div>
+          <div class="project-tech">
+            <span>.NET Core 8</span>
+            <span>Dapper</span>
+            <span>SQL Server</span>
+            <span>React</span>
+            <span>C#</span>
+            <span>REST API</span>
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top: 20px;" onclick="openProjectModal('proj-1')">View Architecture Case Study →</button>
+        </div>
+
+        <!-- PROJECT 2 -->
+        <div class="project-card" data-cat="saas" data-stack="asp.net core react sql server ef core hr payroll invoice">
+          <div class="project-header">
+            <div class="project-icon">👥</div>
+            <span class="project-badge">Enterprise HR</span>
+          </div>
+          <h3 class="project-title">Resource Management System (RMS)</h3>
+          <p class="project-desc">
+            Comprehensive HR & Payroll management platform handling complete employee lifecycle —
+            onboarding, attendance tracking, leave request approvals, salary slips processing, and automated client billing invoicing.
+          </p>
+          <div class="project-features">
+            <span>✅ Complete Employee Lifecycle</span>
+            <span>✅ Attendance & Leave Automation</span>
+            <span>✅ Invoice & Payroll Engine</span>
+          </div>
+          <div class="project-tech">
+            <span>ASP.NET Core</span>
+            <span>React</span>
+            <span>SQL Server</span>
+            <span>EF Core</span>
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top: 20px;" onclick="openProjectModal('proj-2')">View Case Study →</button>
+        </div>
+
+        <!-- PROJECT 3 -->
+        <div class="project-card" data-cat="healthcare" data-stack="asp.net core c# sql server dropbox api async background worker">
+          <div class="project-header">
+            <div class="project-icon">🏥</div>
+            <span class="project-badge">Healthcare SaaS</span>
+          </div>
+          <h3 class="project-title">AQVerify — Healthcare Claim Verification SaaS</h3>
+          <p class="project-desc">
+            Bulk insurance claim verification platform designed for healthcare providers.
+            Processes thousands of claim Excel/CSV rows concurrently with background worker services, integrated with Dropbox API for claim document storage.
+          </p>
+          <div class="project-features">
+            <span>✅ Async Excel Batch Processing</span>
+            <span>✅ Dropbox Document Storage Integration</span>
+            <span>✅ Real-Time Claim Status Pipeline</span>
+          </div>
+          <div class="project-tech">
+            <span>ASP.NET Core</span>
+            <span>C#</span>
+            <span>SQL Server</span>
+            <span>Dropbox API</span>
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top: 20px;" onclick="openProjectModal('proj-3')">View Case Study →</button>
+        </div>
+
+        <!-- PROJECT 4 -->
+        <div class="project-card" data-cat="saas" data-stack="react asp.net core postgresql c# SaaS rbac subscription multi tenant">
+          <div class="project-header">
+            <div class="project-icon">🔑</div>
+            <span class="project-badge">Multi-Tenant SaaS</span>
+          </div>
+          <h3 class="project-title">License Management System</h3>
+          <p class="project-desc">
+            Multi-tenant SaaS portal for managing software license keys, tenant subscriptions, role-based access control (RBAC), and automated renewal alert notifications across multiple corporate clients.
+          </p>
+          <div class="project-features">
+            <span>✅ Multi-Tenant Isolation</span>
+            <span>✅ Role-Based Access Control (RBAC)</span>
+            <span>✅ Renewal Alert & Reporting System</span>
+          </div>
+          <div class="project-tech">
+            <span>React</span>
+            <span>ASP.NET Core</span>
+            <span>PostgreSQL</span>
+            <span>C#</span>
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top: 20px;" onclick="openProjectModal('proj-4')">View Case Study →</button>
+        </div>
+
+        <!-- PROJECT 5 -->
+        <div class="project-card" data-cat="healthcare" data-stack="asp.net core c# sql server ef core lab pdf barcode">
+          <div class="project-header">
+            <div class="project-icon">🧪</div>
+            <span class="project-badge">LIMS System</span>
+          </div>
+          <h3 class="project-title">AlphaLab — Laboratory Information System</h3>
+          <p class="project-desc">
+            Diagnostic laboratory information system for managing patient sample collection workflows, test execution assignments, result logging, and automated PDF report generation with barcode tracking.
+          </p>
+          <div class="project-features">
+            <span>✅ Sample Barcode Tracking</span>
+            <span>✅ Automated PDF Report Generator</span>
+            <span>✅ Test Status Notification Pipeline</span>
+          </div>
+          <div class="project-tech">
+            <span>ASP.NET Core</span>
+            <span>C#</span>
+            <span>SQL Server</span>
+            <span>EF Core</span>
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top: 20px;" onclick="openProjectModal('proj-5')">View Case Study →</button>
+        </div>
+
+        <!-- PROJECT 6 -->
+        <div class="project-card" data-cat="saas" data-stack="asp.net core c# sql server javascript hr compliance">
+          <div class="project-header">
+            <div class="project-icon">💼</div>
+            <span class="project-badge">HR & Payroll</span>
+          </div>
+          <h3 class="project-title">AQHR — HR Payroll System</h3>
+          <p class="project-desc">
+            Human resource management system with employee data management, attendance tracking, salary processing, and statutory compliance reporting modules.
+          </p>
+          <div class="project-tech">
+            <span>ASP.NET Core</span>
+            <span>C#</span>
+            <span>SQL Server</span>
+            <span>JavaScript</span>
+          </div>
+          <button class="btn btn-outline btn-sm" style="margin-top: 20px;" onclick="openProjectModal('proj-6')">View Case Study →</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== PROJECT CASE STUDY MODAL DIALOG ===== -->
+  <div class="blog-modal-backdrop" id="projectModalBackdrop">
+    <div class="blog-modal-container">
+      <button class="blog-modal-close" onclick="closeProjectModal()">&times;</button>
+      <div class="blog-modal-content" id="projectModalContent">
+        <!-- Content inserted dynamically via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <div class="logo-avatar">SP</div>
+            <span class="logo-name">Suraj Prajapati</span>
+          </a>
+          <p>.NET Core & C# Enterprise Systems<br/>Built by Suraj Prajapati.</p>
+        </div>
+        <div class="footer-links">
+          <a href="index.html#hero">Home</a>
+          <a href="index.html#about">About</a>
+          <a href="index.html#skills">Skills</a>
+          <a href="index.html#experience">Experience</a>
+          <a href="projects.html">Projects</a>
+          <a href="blog.html">Blog</a>
+          <a href="index.html#contact">Contact</a>
+        </div>
+        <div class="footer-socials">
+          <a href="https://www.freelancer.in/u/SurajBelduha08" target="_blank" rel="noopener" class="social-link">Freelancer</a>
+          <a href="https://www.linkedin.com/in/suraj-prajapati-201ba222b/" target="_blank" rel="noopener" class="social-link">LinkedIn</a>
+          <a href="https://github.com/surajbelduha" target="_blank" rel="noopener" class="social-link">GitHub</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Suraj Prajapati. All rights reserved.</p>
+        <a href="#" class="back-to-top">↑ Back to Top</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
