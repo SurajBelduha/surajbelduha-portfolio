@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>.NET Core & Backend Engineering Blog | Suraj Prajapati</title>
+  <meta name="description" content="Technical articles on ASP.NET Core 8, C#, FinTech Payment Gateways, HMAC Webhooks, Clean Architecture, and SQL Server performance optimization by Suraj Prajapati." />
+  <meta name="keywords" content=".NET Core Blog, C# Tutorials, Payment Gateway Webhooks, ASP.NET Core 8, Dapper vs EF Core, Clean Architecture C#" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== NAVIGATION ===== -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-bracket">&lt;</span>SP<span class="logo-bracket">/&gt;</span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html#hero" class="nav-link">Home</a></li>
+        <li><a href="index.html#about" class="nav-link">About</a></li>
+        <li><a href="index.html#skills" class="nav-link">Skills</a></li>
+        <li><a href="index.html#experience" class="nav-link">Experience</a></li>
+        <li><a href="index.html#projects" class="nav-link">Projects</a></li>
+        <li><a href="blog.html" class="nav-link active">Blog</a></li>
+        <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" title="Toggle Theme" aria-label="Toggle theme">
+          <svg class="sun-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="moon-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <a href="index.html#contact" class="btn btn-primary nav-cta">Hire Me</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ===== BLOG HERO HEADER ===== -->
+  <section class="blog-hero">
+    <div class="container">
+      <div class="blog-hero-content">
+        <span class="section-tag">Engineering Insights</span>
+        <h1 class="blog-title">The <span class="highlight">.NET Backend</span> Engineering Blog</h1>
+        <p class="blog-subtitle">
+          In-depth technical guides, architecture patterns, and production lessons on ASP.NET Core 8,
+          FinTech payment security, database tuning, and C# best practices.
+        </p>
+        <div class="blog-search-bar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="blogSearchInput" placeholder="Search articles by keyword (e.g. HMAC, Dapper, MediatR, .NET 8)..." />
+        </div>
+        <div class="blog-tags-filter" id="blogFilterTags">
+          <button class="filter-tag active" data-tag="all">All Articles</button>
+          <button class="filter-tag" data-tag="netcore">.NET Core 8</button>
+          <button class="filter-tag" data-tag="fintech">FinTech & Webhooks</button>
+          <button class="filter-tag" data-tag="database">SQL & Dapper</button>
+          <button class="filter-tag" data-tag="architecture">Clean Architecture</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== BLOG POSTS GRID ===== -->
+  <section class="section blog-grid-section">
+    <div class="container">
+      <div class="blog-grid" id="blogGrid">
+
+        <!-- ARTICLE 1 -->
+        <article class="blog-card" data-category="fintech" data-keywords="hmac sha256 webhook payment gateway security fintech net 8 c#">
+          <div class="blog-card-meta">
+            <span class="blog-badge fintech">FinTech Security</span>
+            <span class="blog-read-time">7 min read</span>
+          </div>
+          <h2 class="blog-card-title">Building Bank-Grade Webhook Verification in ASP.NET Core with HMAC-SHA256</h2>
+          <p class="blog-card-excerpt">
+            How to secure incoming payment notifications (Pay-in & Payout callbacks) against replay attacks and request tampering using cryptographic signatures and idempotency keys.
+          </p>
+          <div class="blog-card-footer">
+            <span class="blog-date">July 2026</span>
+            <button class="read-article-btn" onclick="openBlogModal('post-1')">Read Article →</button>
+          </div>
+        </article>
+
+        <!-- ARTICLE 2 -->
+        <article class="blog-card" data-category="database" data-keywords="dapper ef core sql server performance high throughput benchmark c#">
+          <div class="blog-card-meta">
+            <span class="blog-badge database">SQL & Dapper</span>
+            <span class="blog-read-time">9 min read</span>
+          </div>
+          <h2 class="blog-card-title">Why We Chose Dapper Over Entity Framework Core for FinTech Transaction Processing</h2>
+          <p class="blog-card-excerpt">
+            A deep dive into high-throughput database interactions. Comparing raw execution times, memory allocations, and query plan control when handling 10,000+ financial records per second.
+          </p>
+          <div class="blog-card-footer">
+            <span class="blog-date">June 2026</span>
+            <button class="read-article-btn" onclick="openBlogModal('post-2')">Read Article →</button>
+          </div>
+        </article>
+
+        <!-- ARTICLE 3 -->
+        <article class="blog-card" data-category="architecture" data-keywords="clean architecture cqrs mediatR solid principles pattern net 8">
+          <div class="blog-card-meta">
+            <span class="blog-badge architecture">Clean Architecture</span>
+            <span class="blog-read-time">10 min read</span>
+          </div>
+          <h2 class="blog-card-title">Structuring Enterprise .NET Core Solutions: CQRS & MediatR in Practice</h2>
+          <p class="blog-card-excerpt">
+            Decoupling domain logic from API controllers. Learn how CQRS and MediatR pipelines keep payment systems maintainable, unit-testable, and scalable over time.
+          </p>
+          <div class="blog-card-footer">
+            <span class="blog-date">May 2026</span>
+            <button class="read-article-btn" onclick="openBlogModal('post-3')">Read Article →</button>
+          </div>
+        </article>
+
+        <!-- ARTICLE 4 -->
+        <article class="blog-card" data-category="netcore" data-keywords="net 8 performance garbage collector memory optimization async await">
+          <div class="blog-card-meta">
+            <span class="blog-badge netcore">.NET Core 8</span>
+            <span class="blog-read-time">6 min read</span>
+          </div>
+          <h2 class="blog-card-title">Top 5 Performance Optimizations in .NET 8 for Low-Latency Microservices</h2>
+          <p class="blog-card-excerpt">
+            Utilizing Native AOT, System.Threading.Channels, ValueTask, and ArrayPool&lt;T&gt; to achieve sub-millisecond response times in production API endpoints.
+          </p>
+          <div class="blog-card-footer">
+            <span class="blog-date">April 2026</span>
+            <button class="read-article-btn" onclick="openBlogModal('post-4')">Read Article →</button>
+          </div>
+        </article>
+
+        <!-- ARTICLE 5 -->
+        <article class="blog-card" data-category="fintech" data-keywords="bank reconciliation kotak mahindra auto match algorithm batch processing">
+          <div class="blog-card-meta">
+            <span class="blog-badge fintech">FinTech Architecture</span>
+            <span class="blog-read-time">8 min read</span>
+          </div>
+          <h2 class="blog-card-title">Designing Automated Bank Reconciliation Engines in C#</h2>
+          <p class="blog-card-excerpt">
+            Automating daily balance statements, transaction matching algorithms, and exception handling pipelines for Kotak Mahindra Bank and UPI payment gateways.
+          </p>
+          <div class="blog-card-footer">
+            <span class="blog-date">March 2026</span>
+            <button class="read-article-btn" onclick="openBlogModal('post-5')">Read Article →</button>
+          </div>
+        </article>
+
+        <!-- ARTICLE 6 -->
+        <article class="blog-card" data-category="database" data-keywords="sql server indexing stored procedure deadlock query optimization locking">
+          <div class="blog-card-meta">
+            <span class="blog-badge database">Database Tuning</span>
+            <span class="blog-read-time">11 min read</span>
+          </div>
+          <h2 class="blog-card-title">Eliminating SQL Server Deadlocks in High-Concurrency Financial Databases</h2>
+          <p class="blog-card-excerpt">
+            Practical strategies for optimizing table indexes, understanding isolation levels (READ COMMITTED SNAPSHOT), and writing lock-safe stored procedures.
+          </p>
+          <div class="blog-card-footer">
+            <span class="blog-date">February 2026</span>
+            <button class="read-article-btn" onclick="openBlogModal('post-6')">Read Article →</button>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FULL ARTICLE MODAL DIALOG ===== -->
+  <div class="blog-modal-backdrop" id="blogModalBackdrop">
+    <div class="blog-modal-container">
+      <button class="blog-modal-close" onclick="closeBlogModal()">&times;</button>
+      <div class="blog-modal-content" id="blogModalContent">
+        <!-- Content inserted dynamically via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <span class="logo-bracket">&lt;</span>SP<span class="logo-bracket">/&gt;</span>
+          </a>
+          <p>.NET Core & C# Backend Engineering Blog<br/>Written by Suraj Prajapati.</p>
+        </div>
+        <div class="footer-links">
+          <a href="index.html#hero">Home</a>
+          <a href="index.html#about">About</a>
+          <a href="index.html#skills">Skills</a>
+          <a href="index.html#experience">Experience</a>
+          <a href="index.html#projects">Projects</a>
+          <a href="blog.html">Blog</a>
+          <a href="index.html#contact">Contact</a>
+        </div>
+        <div class="footer-socials">
+          <a href="https://www.freelancer.in/u/SurajBelduha08" target="_blank" rel="noopener" class="social-link">Freelancer</a>
+          <a href="https://www.linkedin.com/in/suraj-prajapati-201ba222b/" target="_blank" rel="noopener" class="social-link">LinkedIn</a>
+          <a href="https://github.com/surajbelduha" target="_blank" rel="noopener" class="social-link">GitHub</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Suraj Prajapati. Crafted with HTML5, CSS3 & JavaScript.</p>
+        <a href="#" class="back-to-top">↑ Back to Top</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
